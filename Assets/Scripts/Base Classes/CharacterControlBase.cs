@@ -10,38 +10,43 @@ public class CharacterControlBase : MonoBehaviour
     public LayerMask groundMask;
 
 
-    private float speed = 15f;
+    protected float speed = 15f;
+    protected float jumpHeight = 1.75f;
+    
     private const float gravity = -22.5f;
-    private float jumpHeight = 1.75f;
+    
     Vector3 velocity;
     bool isGrounded;
-    void Start()
+
+    public void GroundedCheck()
     {
-        
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-
+    public void Move() {
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");        
 
         Vector3 move = transform.right * x + transform.forward * z;
+        player.Move(velocity * Time.deltaTime);
         player.Move(speed * Time.deltaTime * move);
+    }
+
+    public void CalculateGravity ()
+    {
+        Debug.Log(isGrounded);
         if (isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
         }
+        velocity.y += gravity * Time.deltaTime;
+    }
 
+    public void Jump()
+    {
         if (isGrounded && Input.GetButtonDown("Jump"))
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
-
-        velocity.y += gravity * Time.deltaTime;
-        player.Move(velocity * Time.deltaTime);
     }
 }
