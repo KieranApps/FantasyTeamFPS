@@ -13,10 +13,10 @@ public class CharacterControlBase : MonoBehaviour
     protected float speed = 15f;
     protected float jumpHeight = 1.75f;
     
-    private const float gravity = -22.5f;
+    protected const float gravity = -22.5f;
     
-    Vector3 velocity;
-    bool isGrounded;
+    protected Vector3 velocity;
+    protected bool isGrounded;
 
     public void GroundedCheck()
     {
@@ -34,7 +34,6 @@ public class CharacterControlBase : MonoBehaviour
 
     public void CalculateGravity ()
     {
-        Debug.Log(isGrounded);
         if (isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
@@ -42,7 +41,7 @@ public class CharacterControlBase : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
     }
 
-    public void Jump()
+    public virtual void Jump()
     {
         if (isGrounded && Input.GetButtonDown("Jump"))
         {

@@ -4,20 +4,20 @@ using UnityEngine;
 
 public class DryadController : CharacterControlBase
 {
-    // Start is called before the first frame update
-    void Start()
+    public override void Jump()
     {
-        
+        if (isGrounded && Input.GetButtonDown("Jump"))
+            {
+                velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            }
     }
-
-    // Update is called once per frame
     void Update()
     {
         // base.Update(); Use base to call the parent functions
         // Attributes are inherited and can just be used
         base.GroundedCheck();
         base.CalculateGravity();
-        base.Jump();
+        Jump();
         // Move after other calculations
         base.Move();
 
