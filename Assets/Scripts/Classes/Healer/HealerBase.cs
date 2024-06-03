@@ -9,18 +9,22 @@ public class HealerBase : MonoBehaviour
     
     // Managing Health and such here, allows class wide damage and healing changes (buffs, debuffs)
     private PlayerHUD hud;
-    public float health;
-    private float maxHealth;
+    
+    // private classSymbol;
 
-    public void InitHUD(PlayerHUD phud)
+    public float health;
+    private float maxHealth = 100;
+
+    public void InitHUD(PlayerHUD phud/*, heroPortrait*/)
     {
         hud = phud;
+        // hud.SetSymbol(classSymbol)
+        // hud.SetPortrait(heroPortrait)
     }
 
-    public void InitHealth(float hp, float maxHp)
+    public void InitHealth()
     {
-        health = hp;
-        maxHealth = maxHp;
+        health = maxHealth;
         CheckHealth();
     }
 
