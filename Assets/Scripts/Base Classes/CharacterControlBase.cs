@@ -9,7 +9,6 @@ public class CharacterControlBase : MonoBehaviour
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
 
-
     protected float speed = 15f;
     protected float jumpHeight = 1.75f;
     
