@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealerBase : MonoBehaviour
+public  abstract class HealerBase : MonoBehaviour
 {
     // Class Passives
     // public float healthRegenRate;
@@ -41,6 +41,14 @@ public class HealerBase : MonoBehaviour
         }
         hud.UpdateHealth(health, maxHealth);
     }
+    public void CheckAmmo(int ammoCount, int maxAmmo)
+    {
+        if (ammoCount <= 0)
+        {
+            ammoCount = 0;
+        }
+        hud.UpdateAmmo(ammoCount, maxAmmo);
+    }
     public void InitValues(float hp)
     {
         health = hp;
@@ -59,4 +67,17 @@ public class HealerBase : MonoBehaviour
         CheckHealth();
     }
 
+    public virtual int ReduceAmmo(int ammoCount)
+    {
+        ammoCount -= 1; // For simplicity, reduce by one here, override if needed for other characters
+        return ammoCount;
+    }
+
+    public int ReloadAmmo(int ammoCount, int maxAmmo)
+    {
+        ammoCount = maxAmmo;
+        return ammoCount;
+    }
+
+    public abstract void ShootPrimaryWeapon(); // Handle shooting of projectile or hitscan or melee
 }

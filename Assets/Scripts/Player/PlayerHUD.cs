@@ -15,4 +15,10 @@ public class PlayerHUD : MonoBehaviour
         healthText.text = currentHealth.ToString();
         maxHealthText.text = maxHealth.ToString();
     }
+
+    public void UpdateAmmo(int ammoCount, int maxAmmo)
+    {
+        // ammoCountText.text = ammoCount.ToString();
+        // maxAmmoText.text = maxAmmo.ToString();
+    }
 }
