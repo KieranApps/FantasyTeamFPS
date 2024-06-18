@@ -10,7 +10,7 @@ public class Dryad : HealerBase
 {
     // Ability functions go in here?
 
-    [SerializeField] private GameObject primaryProjectile;
+    [SerializeField] private GameObject primaryProjectile; // This is the PREFAB (Created by creating the object and dragging it into the project folder/tab)
     [SerializeField] private GameObject primaryProjectileSpawnPoint;
     [SerializeField] private Camera cam;
 
@@ -31,16 +31,21 @@ public class Dryad : HealerBase
     public override void ShootPrimaryWeapon()
     {
         readyToShoot = false;
-        // Shoot projectile
-        DryadPrimaryProjectile projectile = gameObject.AddComponent<DryadPrimaryProjectile>();
-        projectile.SetValues(primaryProjectileSpeed, primaryProjectileSize, primaryProjectileGravity, primaryProjectileFireRate, primaryProjectile);
+        // Create new projectile
+        GameObject projectile = Instantiate(primaryProjectile, primaryProjectileSpawnPoint.transform.position, Quaternion.identity);
+        DryadPrimaryProjectile currentProjectile = projectile.GetComponent<DryadPrimaryProjectile>();
+
+
+        currentProjectile.SetValues(primaryProjectileSpeed, primaryProjectileSize, primaryProjectileGravity, primaryProjectileFireRate, primaryProjectile);
 
         // At some point will need to match rotation
-        GameObject activeProjectile = projectile.CreateProjectile(primaryProjectileSpawnPoint.transform.position);
 
+        if (currentProjectile.hitObject)
+        {
+            Debug.Log("We hit something");
+        }        
         // https://www.youtube.com/watch?v=wZ2UUOC17AY Has some physics calculations that might help with projectile movement
-        // https://www.youtube.com/watch?v=0jGL5_DFIo8 Number two, should help with despawning of projectiles on collision
-
+        
         ammoCount = base.ReduceAmmo(ammoCount);
         if (ammoCount == 0)
         {

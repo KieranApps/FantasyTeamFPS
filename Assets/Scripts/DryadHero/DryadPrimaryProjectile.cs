@@ -15,22 +15,20 @@ public class DryadPrimaryProjectile : Projectile
         bullet = pBullet;
     }
 
-    // Need a destroy function for collisions
-    public override GameObject CreateProjectile(Vector3 playerPosition)
-    {
-        // Instantiate is likely the cause of the lag, look into object pooling
-        currentBullet = Instantiate(bullet, playerPosition, Quaternion.identity);
-        return currentBullet;
-    }
-
     public override void CalculateProjectilePosition()
     {
         // Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
     }
 
-    public override void OnCollisionEnter()
+    void OnCollisionEnter(Collision collision)
     {
-        // Perform hit calculations (if another player, damage, explosion etc....), then destroy
+        hitObject = true;
+        // Debug.Log(collision.gameObject.name);
+        // // Perform hit calculations (if another player, damage, explosion etc....), then destroy
+        // Invoke(nameof(DelayProjectileDestruction), 0.25f);
+    }
+
+    private void DelayProjectileDestruction() {
         Destroy(currentBullet);
     }
 }
