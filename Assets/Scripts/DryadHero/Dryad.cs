@@ -1,19 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class Dryad : HealerBase
 {
     // Ability functions go in here?
 
-    private Projectile projectile;
+    [SerializeField] private GameObject primaryProjectile;
+    [SerializeField] private Camera cam;
+
     public int maxAmmo = 50;
     // ^^ Reason for not being in parent class, is all heros will have unique ammo counts, and such
     private int ammoCount;
     private bool shooting = false;
+
+    private const float primaryProjectileSpeed = 10f;
+    private const float primaryProjectileSize = 2f;
+    private const float primaryProjectileGravity = 4.95f;
+    
     public override void ShootPrimaryWeapon()
     {
         // Shoot projectile
+        DryadPrimaryProjectile projectile = gameObject.AddComponent<DryadPrimaryProjectile>();
+        projectile.SetValues(primaryProjectileSpeed, primaryProjectileSize, primaryProjectileGravity, primaryProjectile);
+        GameObject activeProjectile = projectile.CreateProjectile(cam.transform.position);
+
+        // https://www.youtube.com/watch?v=wZ2UUOC17AY Has some physics calculations that might help with projectile movement
 
         ammoCount = base.ReduceAmmo(ammoCount);
         if (ammoCount == 0)
@@ -51,13 +65,14 @@ public class Dryad : HealerBase
         {
             base.ReloadAmmo(ammoCount, maxAmmo);
         }
+        if (Input.GetKey(KeyCode.Mouse0)) // 0 === Left Click, 1 === Right Click, 2 Middle Click (scroll wheel press)
+        // Use GetKeyDown for single shot
+        {
+            shooting = true;
+        }
         if (Input.GetMouseButtonUp(0))
         {
             shooting = false;
-        }
-        if (Input.GetMouseButtonDown(0)) // 0 === Left Click, 1 === Right Click, 2 Middle Click (scroll wheel press)
-        {
-            shooting = true;
         }
         if (shooting)
         {
