@@ -1,14 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using Unity.VisualScripting;
 using UnityEditor.Rendering;
 using UnityEngine;
+using UnityEngine.Rendering.UI;
 
 public class Dryad : HealerBase
 {
     // Ability functions go in here?
 
     [SerializeField] private GameObject primaryProjectile;
+    [SerializeField] private GameObject primaryProjectileSpawnPoint;
     [SerializeField] private Camera cam;
 
     public int maxAmmo = 50;
@@ -19,21 +22,42 @@ public class Dryad : HealerBase
     private const float primaryProjectileSpeed = 10f;
     private const float primaryProjectileSize = 2f;
     private const float primaryProjectileGravity = 4.95f;
+    private const float primaryProjectileFireRate = 0.5f;
+
+    private const float reloadTime = 1.5f;
+    private bool allowInvoke = true;
+    private bool readyToShoot = true;
     
     public override void ShootPrimaryWeapon()
     {
+        readyToShoot = false;
         // Shoot projectile
         DryadPrimaryProjectile projectile = gameObject.AddComponent<DryadPrimaryProjectile>();
-        projectile.SetValues(primaryProjectileSpeed, primaryProjectileSize, primaryProjectileGravity, primaryProjectile);
-        GameObject activeProjectile = projectile.CreateProjectile(cam.transform.position);
+        projectile.SetValues(primaryProjectileSpeed, primaryProjectileSize, primaryProjectileGravity, primaryProjectileFireRate, primaryProjectile);
+
+        // At some point will need to match rotation
+        GameObject activeProjectile = projectile.CreateProjectile(primaryProjectileSpawnPoint.transform.position);
 
         // https://www.youtube.com/watch?v=wZ2UUOC17AY Has some physics calculations that might help with projectile movement
+        // https://www.youtube.com/watch?v=0jGL5_DFIo8 Number two, should help with despawning of projectiles on collision
 
         ammoCount = base.ReduceAmmo(ammoCount);
         if (ammoCount == 0)
         {
             base.ReloadAmmo(ammoCount, maxAmmo);
         }
+
+        if (allowInvoke)
+        {
+            Invoke(nameof(ResetPrimaryWeapon), primaryProjectileFireRate);
+            allowInvoke = false;
+        }
+    }
+
+    private void ResetPrimaryWeapon()
+    {
+        allowInvoke = true;
+        readyToShoot = true;
     }
 
     // Portrait heroPortrait;
@@ -74,7 +98,7 @@ public class Dryad : HealerBase
         {
             shooting = false;
         }
-        if (shooting)
+        if (readyToShoot && shooting /* && !reloading && ammoCount > 0*/)
         {
             ShootPrimaryWeapon();
         }

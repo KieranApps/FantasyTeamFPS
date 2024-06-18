@@ -1,14 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class DryadPrimaryProjectile : Projectile
 {
-    public override void SetValues(float pSpeed, float pSize, float pGravity, GameObject pBullet)
+    GameObject currentBullet;
+    public override void SetValues(float pSpeed, float pSize, float pGravity, float pFireRate, GameObject pBullet)
     {
         speed = pSpeed;
         size = pSize;
         gravity = pGravity;
+        fireRate = pFireRate;
         bullet = pBullet;
     }
 
@@ -16,7 +19,7 @@ public class DryadPrimaryProjectile : Projectile
     public override GameObject CreateProjectile(Vector3 playerPosition)
     {
         // Instantiate is likely the cause of the lag, look into object pooling
-        GameObject currentBullet = Instantiate(bullet, playerPosition, Quaternion.identity);
+        currentBullet = Instantiate(bullet, playerPosition, Quaternion.identity);
         return currentBullet;
     }
 
@@ -25,5 +28,9 @@ public class DryadPrimaryProjectile : Projectile
         // Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
     }
 
-    // On collision, destroy the projectile (so we dont have millions spawned in causing lag)
+    public override void OnCollisionEnter()
+    {
+        // Perform hit calculations (if another player, damage, explosion etc....), then destroy
+        Destroy(currentBullet);
+    }
 }
