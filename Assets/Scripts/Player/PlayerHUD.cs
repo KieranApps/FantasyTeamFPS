@@ -6,8 +6,8 @@ using UnityEngine.UI;
 
 public class PlayerHUD : MonoBehaviour
 {
-    public TextMeshProUGUI healthText;
-    public TextMeshProUGUI maxHealthText;
+    public TextMeshProUGUI healthText, maxHealthText;
+    public TextMeshProUGUI ammoCountText, maxAmmoText;
 
 
     public void UpdateHealth(float currentHealth, float maxHealth)
@@ -18,7 +18,7 @@ public class PlayerHUD : MonoBehaviour
 
     public void UpdateAmmo(int ammoCount, int maxAmmo)
     {
-        // ammoCountText.text = ammoCount.ToString();
-        // maxAmmoText.text = maxAmmo.ToString();
+        ammoCountText.text = ammoCount.ToString();
+        maxAmmoText.text = maxAmmo.ToString();
     }
 }

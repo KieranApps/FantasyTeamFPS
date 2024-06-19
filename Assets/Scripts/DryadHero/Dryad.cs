@@ -46,7 +46,7 @@ public class Dryad : HealerBase
         currentProjectile.SetLifeTimeTimer();
                 
         ammoCount = base.ReduceAmmo(ammoCount);
-        Debug.Log("Ammo: " + ammoCount);
+        base.CheckAmmo(ammoCount, maxAmmo);
         if (ammoCount == 0)
         {
             ReloadAmmo();
@@ -74,6 +74,7 @@ public class Dryad : HealerBase
 
     private void CompleteReload()
     {
+        base.CheckAmmo(ammoCount, maxAmmo);
         reloading = false;
         allowInvoke = true;
         readyToShoot = true;
