@@ -24,9 +24,11 @@ public class Dryad : HealerBase
     private const float primaryProjectileFireRate = 0.075f;
     private float primarySpread = 0.2f; // Not const as may want to 'ramp up' the spread as firing continues
 
-    private const float reloadTime = 1.5f;
     private bool allowInvoke = true;
     private bool readyToShoot = true;
+
+    private const float reloadTime = 1.5f;
+    private bool reloading = false;
     
     public override void ShootPrimaryWeapon()
     {
@@ -41,14 +43,13 @@ public class Dryad : HealerBase
 
         currentProjectile.SetValues(primaryProjectileSpeed, primaryProjectileGravity, primaryProjectileFireRate, primaryProjectile);
         currentProjectile.Fire(cam);
-
         currentProjectile.SetLifeTimeTimer();
-        // At some point will need to match rotation
                 
         ammoCount = base.ReduceAmmo(ammoCount);
+        Debug.Log("Ammo: " + ammoCount);
         if (ammoCount == 0)
         {
-            base.ReloadAmmo(ammoCount, maxAmmo);
+            ReloadAmmo();
         }
 
         if (allowInvoke)
@@ -58,8 +59,22 @@ public class Dryad : HealerBase
         }
     }
 
+    public override void ReloadAmmo()
+    {
+        reloading = true;
+        ammoCount = maxAmmo;
+        Invoke(nameof(CompleteReload), reloadTime);
+    }
+
     private void ResetPrimaryWeapon()
     {
+        allowInvoke = true;
+        readyToShoot = true;
+    }
+
+    private void CompleteReload()
+    {
+        reloading = false;
         allowInvoke = true;
         readyToShoot = true;
     }
@@ -91,7 +106,7 @@ public class Dryad : HealerBase
     {
         if (Input.GetKeyDown(KeyCode.R)) // For now default to R, make all buttons configurable at some point
         {
-            base.ReloadAmmo(ammoCount, maxAmmo);
+            ReloadAmmo();
         }
         if (Input.GetKey(KeyCode.Mouse0)) // 0 === Left Click, 1 === Right Click, 2 Middle Click (scroll wheel press)
         // Use GetKeyDown for single shot
@@ -102,7 +117,7 @@ public class Dryad : HealerBase
         {
             shooting = false;
         }
-        if (readyToShoot && shooting /* && !reloading && ammoCount > 0*/)
+        if (readyToShoot && shooting && !reloading && ammoCount > 0)
         {
             ShootPrimaryWeapon();
         }

@@ -73,11 +73,7 @@ public  abstract class HealerBase : MonoBehaviour
         return ammoCount;
     }
 
-    public int ReloadAmmo(int ammoCount, int maxAmmo)
-    {
-        ammoCount = maxAmmo;
-        return ammoCount;
-    }
+    public abstract void ReloadAmmo();
 
     public abstract void ShootPrimaryWeapon(); // Handle shooting of projectile or hitscan or melee
 }
