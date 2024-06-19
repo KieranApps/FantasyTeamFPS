@@ -31,6 +31,10 @@ public class DryadPrimaryProjectile : Projectile
         // Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         // Raycast hit;
         // Vector3 targetPoint
+
+        // Sound
+        AudioSource fireSound = this.GetComponent<AudioSource>();
+        fireSound.Play();
     }
 
     public void DestroyOnLifeEnd()
