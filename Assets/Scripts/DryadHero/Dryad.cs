@@ -19,10 +19,10 @@ public class Dryad : HealerBase
     private int ammoCount;
     private bool shooting = false;
 
-    private const float primaryProjectileSpeed = 10f;
-    private const float primaryProjectileSize = 2f;
+    private const float primaryProjectileSpeed = 100f;
     private const float primaryProjectileGravity = 4.95f;
-    private const float primaryProjectileFireRate = 0.5f;
+    private const float primaryProjectileFireRate = 0.075f;
+    private float primarySpread = 0.2f; // Not const as may want to 'ramp up' the spread as firing continues
 
     private const float reloadTime = 1.5f;
     private bool allowInvoke = true;
@@ -32,20 +32,19 @@ public class Dryad : HealerBase
     {
         readyToShoot = false;
         // Create new projectile
-        GameObject projectile = Instantiate(primaryProjectile, primaryProjectileSpawnPoint.transform.position, Quaternion.identity);
+        float x = Random.Range(-primarySpread, primarySpread);
+        float y = Random.Range(-primarySpread, primarySpread);
+        Vector3 spawnPoint = primaryProjectileSpawnPoint.transform.position + new Vector3(x, y, 0);
+        GameObject projectile = Instantiate(primaryProjectile, spawnPoint, cam.transform.rotation);
         DryadPrimaryProjectile currentProjectile = projectile.GetComponent<DryadPrimaryProjectile>();
 
 
-        currentProjectile.SetValues(primaryProjectileSpeed, primaryProjectileSize, primaryProjectileGravity, primaryProjectileFireRate, primaryProjectile);
+        currentProjectile.SetValues(primaryProjectileSpeed, primaryProjectileGravity, primaryProjectileFireRate, primaryProjectile);
+        currentProjectile.Fire(cam);
 
+        currentProjectile.SetLifeTimeTimer();
         // At some point will need to match rotation
-
-        if (currentProjectile.hitObject)
-        {
-            Debug.Log("We hit something");
-        }        
-        // https://www.youtube.com/watch?v=wZ2UUOC17AY Has some physics calculations that might help with projectile movement
-        
+                
         ammoCount = base.ReduceAmmo(ammoCount);
         if (ammoCount == 0)
         {

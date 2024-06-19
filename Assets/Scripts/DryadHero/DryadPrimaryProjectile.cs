@@ -5,30 +5,41 @@ using UnityEngine;
 
 public class DryadPrimaryProjectile : Projectile
 {
-    GameObject currentBullet;
-    public override void SetValues(float pSpeed, float pSize, float pGravity, float pFireRate, GameObject pBullet)
+    public new const float lifeTime = 5f;
+    public override void SetValues(float pSpeed, float pGravity, float pFireRate, GameObject pBullet)
     {
         speed = pSpeed;
-        size = pSize;
-        gravity = pGravity;
         fireRate = pFireRate;
         bullet = pBullet;
     }
 
-    public override void CalculateProjectilePosition()
-    {
-        // Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-    }
-
     void OnCollisionEnter(Collision collision)
     {
-        hitObject = true;
-        // Debug.Log(collision.gameObject.name);
         // // Perform hit calculations (if another player, damage, explosion etc....), then destroy
-        // Invoke(nameof(DelayProjectileDestruction), 0.25f);
+        DestroyProjectile();
     }
 
-    private void DelayProjectileDestruction() {
-        Destroy(currentBullet);
+    public void SetLifeTimeTimer()
+    {
+        Invoke(nameof(DestroyOnLifeEnd), lifeTime);
+    }
+    public override void Fire(Camera cam)
+    {
+        // https://www.youtube.com/watch?v=wZ2UUOC17AY At some point, upgrade to use the ray case from this to get target position from camera.
+        // This will help for when the bullet is spawn by the 'Weapon' of the hero, so it would not itself be centered but still needs to aim towards the centre
+        this.GetComponent<Rigidbody>().velocity = cam.transform.forward * speed;
+        // Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        // Raycast hit;
+        // Vector3 targetPoint
+    }
+
+    public void DestroyOnLifeEnd()
+    {
+        DestroyProjectile();
+    }
+
+    private void DestroyProjectile() {
+        CancelInvoke(nameof(DestroyOnLifeEnd));
+        Destroy(this.gameObject);
     }
 }

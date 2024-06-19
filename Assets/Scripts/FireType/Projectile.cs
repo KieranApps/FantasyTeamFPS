@@ -4,16 +4,15 @@ using UnityEngine;
 
 public abstract class Projectile : MonoBehaviour
 {
-    public float speed, size, gravity, fireRate;
+    public float speed, gravity, fireRate, lifeTime;
     protected GameObject bullet;
     public bool hitObject;
-    public virtual void SetValues(float pSpeed, float pSize, float pGravity, float pFireRate, GameObject bullet)
+    public virtual void SetValues(float pSpeed, float pGravity, float pFireRate, GameObject bullet)
     {
         speed = pSpeed;
-        size = pSize;
         gravity = pGravity;
         fireRate = pFireRate;
     }
 
-    public abstract void CalculateProjectilePosition();
+    public abstract void Fire(Camera cam);
 }
